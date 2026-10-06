@@ -6,20 +6,23 @@ let tentativas = 1;
 function exibirTextoNaTela(tag, texto) {
     let campo = document.querySelector(tag);
     campo.innerHTML = texto;
+    // Boa integração com o leitor de tela (Acessibilidade)
     responsiveVoice.speak(texto, 'Brazilian Portuguese Female', {rate:1.2});
 }
 
 function exibirMensagemInicial() {
     exibirTextoNaTela('h1', 'Jogo do número secreto');
-    exibirTextoNaTela('p', 'Escolha um número entre 1 e 10');
+    exibirTextoNaTela('p', `Escolha um número entre 1 e ${numeroLimite}`);
 }
 
 exibirMensagemInicial();
 
 function verificarChute() {
-    let chute = document.querySelector('input').value;
-    
-    if (chute == numeroSecreto) {
+    // CORREÇÃO: Convertendo o valor do input para número inteiro (parseInt)
+    let chute = parseInt(document.querySelector('input').value);
+   
+    // BOAS PRÁTICAS: Usando o comparador estrito === para checar tipo e valor
+    if (chute === numeroSecreto) {
         exibirTextoNaTela('h1', 'Acertou!');
         let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
         let mensagemTentativas = `Você descobriu o número secreto com ${tentativas} ${palavraTentativa}!`;
@@ -40,20 +43,22 @@ function gerarNumeroAleatorio() {
     let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
     let quantidadeDeElementosNaLista = listaDeNumerosSorteados.length;
 
-    if (quantidadeDeElementosNaLista == numeroLimite) {
+    if (quantidadeDeElementosNaLista === numeroLimite) {
         listaDeNumerosSorteados = [];
     }
+
     if (listaDeNumerosSorteados.includes(numeroEscolhido)) {
         return gerarNumeroAleatorio();
     } else {
         listaDeNumerosSorteados.push(numeroEscolhido);
-        console.log(listaDeNumerosSorteados)
+        console.log(listaDeNumerosSorteados);
         return numeroEscolhido;
     }
 }
 
 function limparCampo() {
-    chute = document.querySelector('input');
+    // CORREÇÃO: Adicionado o 'let' para evitar vazamento de escopo global
+    let chute = document.querySelector('input');
     chute.value = '';
 }
 
@@ -62,12 +67,6 @@ function reiniciarJogo() {
     limparCampo();
     tentativas = 1;
     exibirMensagemInicial();
-    document.getElementById('reiniciar').setAttribute('disabled', true)
+    // BOAS PRÁTICAS: Usando o padrão de desativação moderna de atributos
+    document.getElementById('reiniciar').setAttribute('disabled', 'true');
 }
-
-
-
-
-
-
-
